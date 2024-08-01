@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Config;
 
 class CommissionCalculatorService
@@ -22,6 +23,7 @@ class CommissionCalculatorService
     /**
      * @param array $operations
      * @return array
+     * @throws GuzzleException
      */
     public function calculateCommission(array $operations)
     {
@@ -60,6 +62,7 @@ class CommissionCalculatorService
      * @param $currency
      * @param $weeklyWithdrawals
      * @return float|int
+     * @throws GuzzleException
      */
     protected function calculateWithdrawCommission($date, $userId, $userType, $amount, $currency, &$weeklyWithdrawals)
     {
@@ -72,7 +75,6 @@ class CommissionCalculatorService
             $weeklyWithdrawals[$key] = ['count' => 0, 'amount' => 0];
         }
 
-        // Update the withdrawal count and amount
         $weeklyWithdrawals[$key]['count']++;
         $weeklyWithdrawals[$key]['amount'] += $amountInEur;
 

@@ -25,6 +25,7 @@ class CurrencyConverterRepository
      * @param $currency
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
     public function fetchRate($currency)
     {

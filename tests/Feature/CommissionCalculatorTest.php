@@ -46,18 +46,14 @@ class CommissionCalculatorTest extends TestCase
             ],
         ]);
 
-        // Instantiate the CommissionCalculatorService
         $this->commissionCalculator = new CommissionCalculatorService($this->currencyConverterMock);
     }
 
     public function testCalculateCommission()
     {
         $csvFilePath = base_path('input.csv');
-
         $csv = Reader::createFromPath($csvFilePath, 'r');
         $csv->setHeaderOffset(null); // No header row
-
-        // Fetch records from the CSV
         $records = $csv->getRecords();
 
         foreach ($records as $record) {
