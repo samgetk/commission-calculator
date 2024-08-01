@@ -38,7 +38,7 @@ class CurrencyConverterRepository
             ]);
             $data = json_decode($response->getBody(), true);
             if (!isset($data['rates'][$currency])) {
-                throw new Exception("Exchange rate for {$currency} not found.");
+                throw new Exception("Exchange rate for {$currency} not found. Please check you API KEY!");
             }
             return $data['rates'][$currency];
         } catch (Exception $e) {
