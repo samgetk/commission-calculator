@@ -4,8 +4,8 @@ namespace Tests\Feature;
 
 use League\Csv\Reader;
 use Tests\TestCase;
-use App\Services\CommissionCalculator;
-use App\Services\CurrencyConverter;
+use App\Services\CommissionCalculatorService;
+use App\Services\CurrencyConverterService;
 use Illuminate\Support\Facades\Config;
 use Mockery;
 
@@ -18,8 +18,8 @@ class CommissionCalculatorTest extends TestCase
     {
         parent::setUp();
 
-        // Mock the CurrencyConverter
-        $this->currencyConverterMock = Mockery::mock(CurrencyConverter::class);
+        // Mock the CurrencyConverterService
+        $this->currencyConverterMock = Mockery::mock(CurrencyConverterService::class);
         $this->currencyConverterMock->shouldReceive('convert')->andReturnUsing(function ($amount, $from, $to) {
             // Simulate conversion rates
             if ($from === 'USD' && $to === 'EUR') {
@@ -46,8 +46,8 @@ class CommissionCalculatorTest extends TestCase
             ],
         ]);
 
-        // Instantiate the CommissionCalculator
-        $this->commissionCalculator = new CommissionCalculator($this->currencyConverterMock);
+        // Instantiate the CommissionCalculatorService
+        $this->commissionCalculator = new CommissionCalculatorService($this->currencyConverterMock);
     }
 
     public function testCalculateCommission()

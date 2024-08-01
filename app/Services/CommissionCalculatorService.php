@@ -4,17 +4,25 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Config;
 
-class CommissionCalculator
+class CommissionCalculatorService
 {
+    /**
+     * @var mixed
+     */
     protected $config;
-    protected $currencyConverter;
 
-    public function __construct(CurrencyConverter $currencyConverter)
+    /**
+     * @param CurrencyConverterService $currencyConverterService
+     */
+    public function __construct(protected CurrencyConverterService $currencyConverterService)
     {
         $this->config = Config::get('commission');
-        $this->currencyConverter = $currencyConverter;
     }
 
+    /**
+     * @param array $operations
+     * @return array
+     */
     public function calculateCommission(array $operations)
     {
         $commissions = [];
@@ -22,7 +30,7 @@ class CommissionCalculator
 
         foreach ($operations as $operation) {
             [$date, $userId, $userType, $operationType, $amount, $currency] = $operation;
-            $amount = (float) $amount;
+            $amount = (float)$amount;
             if ($operationType === 'deposit') {
                 $commissions[] = $this->calculateDepositCommission($amount, $currency);
             } else {
@@ -33,15 +41,29 @@ class CommissionCalculator
         return $commissions;
     }
 
+    /**
+     * @param $amount
+     * @param $currency
+     * @return float|int
+     */
     protected function calculateDepositCommission($amount, $currency)
     {
         $fee = $amount * $this->config['deposit_fee'];
         return $this->roundUp($fee, $currency);
     }
 
+    /**
+     * @param $date
+     * @param $userId
+     * @param $userType
+     * @param $amount
+     * @param $currency
+     * @param $weeklyWithdrawals
+     * @return float|int
+     */
     protected function calculateWithdrawCommission($date, $userId, $userType, $amount, $currency, &$weeklyWithdrawals)
     {
-        $amountInEur = $this->currencyConverter->convert($amount, $currency, 'EUR');
+        $amountInEur = $this->currencyConverterService->convert($amount, $currency, 'EUR');
         $week = date('oW', strtotime($date));
         $key = "{$userId}-{$week}";
 
@@ -76,11 +98,16 @@ class CommissionCalculator
             $fee = $amountInEur * $this->config['business_withdraw_fee'];
         }
 
-        $feeInOriginalCurrency = $this->currencyConverter->convert($fee, 'EUR', $currency);
+        $feeInOriginalCurrency = $this->currencyConverterService->convert($fee, 'EUR', $currency);
         return $this->roundUp($feeInOriginalCurrency, $currency);
     }
 
 
+    /**
+     * @param $amount
+     * @param $currency
+     * @return float|int
+     */
     protected function roundUp($amount, $currency)
     {
         $decimalPlaces = $this->config['currencies'][$currency];

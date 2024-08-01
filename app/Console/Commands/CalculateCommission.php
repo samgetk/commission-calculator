@@ -2,19 +2,20 @@
 
 namespace App\Console\Commands;
 
-use App\Services\CommissionCalculator;
-use App\Services\CurrencyConverter;
+use App\Services\CommissionCalculatorService;
+use App\Services\CurrencyConverterService;
 use Illuminate\Console\Command;
 use League\Csv\Reader;
 
 class CalculateCommission extends Command
 {
-    protected $commissionCalculator;
 
-    public function __construct(CommissionCalculator $commissionCalculator)
+    /**
+     * @param CommissionCalculatorService $commissionCalculator
+     */
+    public function __construct(protected CommissionCalculatorService $commissionCalculator)
     {
         parent::__construct();
-        $this->commissionCalculator = $commissionCalculator;
     }
 
     /**
@@ -59,6 +60,10 @@ class CalculateCommission extends Command
         return 0;
     }
 
+    /**
+     * @param $csvFile
+     * @return array
+     */
     private function loadOperationsFromCSV($csvFile)
     {
         $operations = [];
@@ -83,4 +88,5 @@ class CalculateCommission extends Command
         }
 
         return $operations;
-    }}
+    }
+}

@@ -27,7 +27,7 @@ class AddCurrency extends Command
     {
 
         $code = strtoupper($this->argument('code'));
-        $decimalPlaces = (int) $this->argument('decimal_places');
+        $decimalPlaces = (int)$this->argument('decimal_places');
 
         $configFilePath = config_path('commission.php');
 
