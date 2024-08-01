@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Services\CommissionCalculatorService;
-use App\Services\CurrencyConverterService;
 use Illuminate\Console\Command;
 use League\Csv\Reader;
 

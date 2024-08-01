@@ -13,6 +13,7 @@ class AddCurrency extends Command
      * @var string
      */
     protected $signature = 'currency:add {code} {decimal_places}';
+
     /**
      * The console command description.
      *
@@ -30,12 +31,9 @@ class AddCurrency extends Command
         $decimalPlaces = (int)$this->argument('decimal_places');
 
         $configFilePath = config_path('commission.php');
-
         $config = include $configFilePath;
-
         $config['currencies'][$code] = $decimalPlaces;
         $newConfigContent = '<?php return ' . var_export($config, true) . ';';
-
         File::put($configFilePath, $newConfigContent);
 
         $this->info("Currency {$code} with {$decimalPlaces} decimal places added successfully.");
